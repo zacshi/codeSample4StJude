@@ -14,7 +14,7 @@ library(data.table)
 library(Gviz)
 
 
-#a barplot based on the functional annotation of the genomic regions.
+#Demo1: a barplot based on the functional annotation of the genomic regions.
 my_GenomeReport <- read.csv("./query.output.genome_summary.csv")
 str(my_GenomeReport)
 myData <- as.data.frame(table(my_GenomeReport$Func.refgene))
@@ -23,7 +23,7 @@ ggbarplot(myData, x= "Var1", y = "Freq", color = "#00AFBB", fill = "#00AFBB",
           xlab = "Locations", ylab = "Frequencies", x.text.angle=60)
 dev.off()
 
-#my test showing covearge over all chromosomes in a bam file
+#Demo2 showing covearge over all chromosomes in a bam file
 bam1 <- BamFile(file="./OversizeFiles/Bioo1Sorted.bam", index="./Bioo1Sorted.bam.bai")
 pdf("demoFig2.pdf", width = 15, height = 7)
 autoplot(bam1, method = "estimate", main = "This is a demo to Scott")
@@ -73,7 +73,7 @@ mybaits <- ggbio() +
 mybaits
 
 
-#Use Gviz package and a bedgraph file to visualize coverage and location
+#Demo3: Use Gviz package and a bedgraph file to visualize coverage and location
 bedgraph_dt <- fread('./OversizeFiles/bio1seq.bedGraph', col.names = c('chromosome', 'start', 'end', 'value'))
 # Specifiy the range to plot, "PIK3CA" gene and nearby
 thechr <- "chr3"
