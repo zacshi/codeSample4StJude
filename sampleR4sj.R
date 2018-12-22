@@ -1,4 +1,6 @@
-## mostly modified from an online tutorial http://www.sthda.com/english/wiki/ggbio-visualize-genomic-data
+## mostly modified from an online tutorial 
+## http://www.sthda.com/english/wiki/ggbio-visualize-genomic-data
+
 library(BayesPeak)
 library(ggbio)
 library(GenomicRanges)
@@ -11,9 +13,19 @@ library(ggpubr)
 library(data.table)
 library(Gviz)
 
+
+#a barplot based on the functional annotation of the genomic regions.
+my_GenomeReport <- read.csv("./query.output.genome_summary.csv")
+str(my_GenomeReport)
+myData <- as.data.frame(table(my_GenomeReport$Func.refgene))
+png("demoFig1.png")
+ggbarplot(myData, x= "Var1", y = "Freq", color = "#00AFBB", fill = "#00AFBB",
+          xlab = "Locations", ylab = "Frequencies", x.text.angle=60)
+dev.off()
+
 #my test showing covearge over all chromosomes in a bam file
-bam1 <- BamFile(file="./Bioo1Sorted.bam", index="./Bioo1Sorted.bam.bai")
-pdf("demoFig1.pdf", width = 15, height = 7)
+bam1 <- BamFile(file="./OversizeFiles/Bioo1Sorted.bam", index="./Bioo1Sorted.bam.bai")
+pdf("demoFig2.pdf", width = 15, height = 7)
 autoplot(bam1, method = "estimate", main = "This is a demo to Scott")
 dev.off()
 
@@ -25,6 +37,7 @@ what <- genesymbol[c("BRAF")]
 what <- range(what, ignore.strand = TRUE)
 what <- keepSeqlevels(what, "chr7")
 autoplot(bam1, which = what, color = "red", main = "BRAF gene")
+
 
 # another gene
 what <- genesymbol[c("PIK3CA")]
@@ -44,7 +57,7 @@ seqlevels(WithoutX, pruning.mode="coarse") <- as.character(unique(seqnames(Witho
 WithoutX
 #end(WithoutX) <- start(WithoutX)
 seqlengths(WithoutX) <- seqlengths(hg19sub)
-KLv1probes <- ggbio() + 
+KLv1probes <- ggbio() +
     circle(WithoutX, geom = "point", color = "steelblue") + #somatic mutation
     circle(hg19sub, geom = "ideo", fill = "gray70") +#Ideogram
     circle(hg19sub, geom = "scale", size = 2) +#Scale
@@ -52,7 +65,7 @@ KLv1probes <- ggbio() +
 KLv1probes
 #anthor set of probes, my baits in ActionSeq
 ActionSeqProbes <- import.bed("SHI-hg19-baits-filtration1-targetcovg-171006je.bedplus")
-mybaits <- ggbio() + 
+mybaits <- ggbio() +
     circle(ActionSeqProbes, geom = "point", color = "steelblue") + #somatic mutation
     circle(hg19all, geom = "ideo", fill = "gray70") +#Ideogram
     circle(hg19all, geom = "scale", size = 2) +#Scale
@@ -61,9 +74,9 @@ mybaits
 
 
 #Use Gviz package and a bedgraph file to visualize coverage and location
-bedgraph_dt <- fread('./bio1seq.bedGraph', col.names = c('chromosome', 'start', 'end', 'value'))
+bedgraph_dt <- fread('./OversizeFiles/bio1seq.bedGraph', col.names = c('chromosome', 'start', 'end', 'value'))
 # Specifiy the range to plot, "PIK3CA" gene and nearby
-techr <- "chr3"
+thechr <- "chr3"
 st <- 1788e5
 en <-179e6
 bedgraph_dt_one_chr <- bedgraph_dt[chromosome == thechr]
@@ -94,18 +107,13 @@ grtrack <- GeneRegionTrack(
     showId = TRUE,
     name = "Gene Annotation"
 )
+png("demoFig3.png")
 plotTracks(
     list(itrack, gtrack, dtrack, grtrack),
     from = st, to = en
 )
-#graph completed. 
+dev.off()
+#graphs completed.
 
-
-
-#last, a barplot based the function annotation of the genomic regions. 
-my_GenomeReport <- read.csv("./query.output.genome_summary.csv")
-str(my_GenomeReport)
-myData <- as.data.frame(table(my_GenomeReport$Func.refgene))
-ggbarplot(myData, x= "Var1", y = "Freq", color = "#00AFBB", fill = "#00AFBB", 
-          xlab = "Locations", ylab = "Frequencies", x.text.angle=60)
+sessionInfo()
 
