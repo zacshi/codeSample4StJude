@@ -1,6 +1,6 @@
-#ignore all file inside OversizedFiles
+#ignore all file inside OversizeFiles
 
-./OversizedFiles/*.*
+./OversizeFiles/*.*
 
 
 
